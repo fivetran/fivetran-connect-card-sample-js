@@ -7,14 +7,14 @@ First of all you should install Node.js and NPM - https://nodejs.org/en/download
 Edit the server.js file, update the following lines:
 
 ```
-//                           'API URL'                      'API-key'           'API-secret'
-const client = new ApiClient('https://api.fivetran.com/v1', 'YOUR_API_KEY', 'YOUR_API_SECRET');
-const group = 'YOUR_GROUP_ID';
+5  //                           'API URL'                      'API-key'           'API-secret'
+6  const client = new ApiClient('https://api.fivetran.com/v1', 'YOUR_API_KEY', 'YOUR_API_SECRET');
+7  const group = 'YOUR_GROUP_ID';
 ```
 You should specify your [API-key/API-secret](https://fivetran.com/docs/rest-api/getting-started) and Fivetran `group_id`. 
 
-You can find you group id using our public postman collection, via `GET https://api.fivetran.com/v1/groups` request. 
-https://fivetran.com/docs/rest-api/groups#listallgroups
+You can find you group id using our public [postman collection](https://fivetran.com/docs/rest-api/getting-started#postmancollection), via [List all groups](https://fivetran.com/docs/rest-api/groups#listallgroups) endpoint. 
+
 
 After all set, navigate to the project dir and run the following:
 
