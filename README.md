@@ -17,6 +17,8 @@ You should specify your [API-key/API-secret](https://fivetran.com/docs/rest-api/
 
 You can find you group id using our public [postman collection](https://fivetran.com/docs/rest-api/getting-started#postmancollection), via [List all groups](https://fivetran.com/docs/rest-api/groups#listallgroups) endpoint. 
 
+If you don't have group, go and create one via [Fivetran Dashboard](https://fivetran.com/account).
+
 
 After all set, navigate to the project dir and run the following:
 
