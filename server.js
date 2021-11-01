@@ -3,8 +3,8 @@ import ApiClient from './api-client.js'
 import express from 'express'
 
 //                           'API URL'                      'API-key'           'API-secret'
-const client = new ApiClient('https://api.fivetran.com/v1', 'f5DGD1uF0dxNcdhS', 'nXlt0OXe2xFWEovCOM8aYMa40QdlfGQF');
-const group = '1k56c2c4xlti6';
+const client = new ApiClient('https://api.fivetran.com/v1', 'YOUR_API_KEY', 'YOUR_API_SECRET');
+const group = 'YOUR_GROUP_ID';
 
 const app = express()
 app.use(express.json()) 
