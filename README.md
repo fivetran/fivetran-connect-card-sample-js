@@ -2,7 +2,7 @@
  
 > IMPORTANT: To use this project, you must be a Powered by Fivetran customer. This is a demo project, and you do not need to have an existing React front end or Express backend project.
 
-The API Sample Code Project shows you how to allow your customers to create new and manage existing connectors. You will only use one group and there are no auth sessions between the front end and the back end, so all users can see all connectors.
+The API Sample Code Project shows you how to allow your customers to create new and manage existing connectors. You will only create one connector group at a time and there are no auth sessions between the front end and the back end, so all of your customers can see all of the connectors in that group.
 
 ## Install & run
 
