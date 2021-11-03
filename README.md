@@ -1,6 +1,6 @@
 # API Sample Code Project
  
-> IMPORTANT: To use this project, you must be a Powered by Fivetran customer. This is a demo project, and you do not need to have an existing React front end or Express backend project.
+> IMPORTANT: To use this project, you must be a Powered by Fivetran customer. This is a demo project, and you do not need to have an existing React front end or Express back end project.
 
 The API Sample Code Project shows you how to allow your customers to create new and manage existing connectors. You will only create one connector group at a time and there are no auth sessions between the front end and the back end, so all of your customers can see all of the connectors in that group.
 
@@ -20,20 +20,20 @@ The API Sample Code Project shows you how to allow your customers to create new 
 
 3. Navigate to the project directory and run the following commands :
 
-    Install all npm packages:
+    Install all NPM packages:
     ```
     ~/sample-code-project% npm install 
     ~/sample-code-project% cd client
     ~/sample-code-project/client% npm install
     ```
 
-    Start the ExpressJS backend
+    Start the ExpressJS back end:
     ```
     ~/sample-code-project% cd ..
     ~/sample-code-project% node server.js
     ```
 
-    Run ReactJS frontend using debug server 
+    Run ReactJS front end using a debug server:
     ```
     ~/sample-code-project% cd client
     ~/sample-code-project/client% npm start
