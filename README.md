@@ -22,9 +22,9 @@ The API Sample Code Project shows you how to allow your customers to create new 
 
     Install all NPM packages:
     ```
-    ~/sample-code-project% npm install 
+    ~/sample-code-project% npm ci 
     ~/sample-code-project% cd client
-    ~/sample-code-project/client% npm install
+    ~/sample-code-project/client% npm ci
     ```
 
     Start the ExpressJS back end:

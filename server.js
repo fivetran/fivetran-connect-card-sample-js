@@ -11,11 +11,26 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/_/services', async (req, res) => {
-    res.send(await client.getMetadata())
+    try {
+        const metadata = await client.getMetadata();
+        res.send(metadata);
+    }
+    catch(e){
+       console.error(`Error reading metadata: ${e.message}`);
+       res.status(500).send('Failed to create connect-card-token')
+    }
+    
 })
 
 app.get('/_/connectors', async(req, res) => {
-    res.send(await client.getListOfConnectorsInGroup(group))
+    try {
+        const data = await client.getListOfConnectorsInGroup(group)
+        res.send(data);
+    }
+    catch(e){
+        console.error(`Error reading connectors: ${e.message}`);
+        res.status(500).send('Failed to get connectors list')
+     }
 })
 
 app.get('/_/connectors/:connectorId/form', async(req, res) => {
