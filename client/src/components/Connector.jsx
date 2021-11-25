@@ -11,13 +11,16 @@ export function Connector(props) {
   let { id } = useParams();
   const [editLink, setEditLink] = useState(null);
   const [editError, setEditError] = useState(null);
-  useEffect(async () => {
-    try {
-      const link = await get(`/_/connectors/${id}/form`);
-      setEditLink(`${link.url}&redirect_uri=http://localhost:3000/connectors/${link.connectorId}`)
-    } catch(e) {
-      setEditError(handleError(e));
+  useEffect(() => {
+    const getLink = async () => { 
+      try {
+        const link = await get(`/_/connectors/${id}/form`);
+        setEditLink(`${link.url}&redirect_uri=http://localhost:3000/connectors/${link.connectorId}`)
+      } catch(e) {
+        setEditError(handleError(e));
+      }
     }
+    getLink();
   }, [id]);
   if (!props.connectors || !props.services || !editLink){
     if (editError){

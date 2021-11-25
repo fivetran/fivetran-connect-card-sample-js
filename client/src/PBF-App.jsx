@@ -20,16 +20,19 @@ export default function App () {
   const[connectors, setConnectors] = useState(null);
   const[error, setError] = useState(null);
   
-  useEffect(async () => {
-    try {
-      const services = await get('/_/services');
-      const connectors = await get('/_/connectors');
-      setServices(services);
-      setConnectors(connectors);
-      setError(null);
-    } catch (e) {
-      setError(handleError(e));
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const services = await get('/_/services');
+        const connectors = await get('/_/connectors');
+        setServices(services);
+        setConnectors(connectors);
+        setError(null);
+      } catch (e) {
+        setError(handleError(e));
+      }
     }
+    load();
   }, []);
 
   if (!error){

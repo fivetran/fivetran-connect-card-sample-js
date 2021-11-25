@@ -15,16 +15,20 @@ export function Service(props) {
   const [error, setError] = useState(null);
   const [redirect, setRedirect] = useState(null);
 
-  useEffect(async () => {
-    try {
-      if (submitted){
+  useEffect(() => {
+    const submit = async () => {
+      try {
         const connector = await post('/_/connectors', { service: id, name: name });
         setRedirect(`/connectors/${connector.connectorId}`);
+      } catch(e) {
+        setError(handleError(e));
       }
-    } catch(e) {
-      setError(handleError(e));
+    }
+    if (submitted) {
+      submit();
     }
   }, [submitted, id, name]);
+  
   if (redirect)
     return <Redirect to={redirect}/>;
 
