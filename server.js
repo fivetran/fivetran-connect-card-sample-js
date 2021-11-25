@@ -3,8 +3,8 @@ import ApiClient from './api-client.js'
 import express from 'express'
 
 //                           'API URL'                      'API-key'           'API-secret'
-const client = new ApiClient('https://api.fivetran.com/v1', 'YOUR_API_KEY', 'YOUR_API_SECRET');
-const group = 'YOUR_GROUP_ID';
+const client = new ApiClient('https://api.fivetran.com/v1', 'API_KEY', 'API_SECRET');
+const group = 'GROUP_ID';
 
 const app = express()
 app.use(express.json()) 
@@ -17,7 +17,7 @@ app.get('/_/services', async (req, res) => {
     }
     catch(e){
        console.error(`Error reading metadata: ${e.message}`);
-       res.status(500).send('Failed to create connect-card-token')
+       res.status(500).send(e.message);
     }
     
 })
@@ -28,23 +28,27 @@ app.get('/_/connectors', async(req, res) => {
         res.send(data);
     }
     catch(e){
-        console.error(`Error reading connectors: ${e.message}`);
-        res.status(500).send('Failed to get connectors list')
+        res.status(500).send(`Error reading connectors: ${e.message}`);
      }
 })
 
 app.get('/_/connectors/:connectorId/form', async(req, res) => {
-    client.getConnectCardUrlForConnector(req.params.connectorId)
-        .then( t => res.send(JSON.stringify({ url: t, connectorId: req.params.connectorId})))
-        .catch(e => res.status(500).send('Failed to create connect-card-token'));
+    try {
+        const token = await client.getConnectCardTokenForConnector(req.params.connectorId);
+        res.send(JSON.stringify({ url: `https://fivetran.com/connect-card/setup?auth=${token}`, connectorId: req.params.connectorId}))
+    } catch(e) {
+        res.status(500).send(`Error while retrieving connect-card: ${e.message}`);
+    }
 })
 
 app.post('/_/connectors', async(req, res) => {
-    client.createConnector(req.body.service, group, req.body.name)
-        .then(c => client.getConnectCardUrlForConnector(c.id)
-            .then(t => res.send(JSON.stringify({ url: t, connectorId: c.id})))
-            .catch(e => res.status(500).send({message:'Failed to create connect-card-token', error: e})))
-        .catch(e => res.status(500).send({message:'Failed to create connector', error: e}));
+    try {
+        const connector = await client.createConnector(req.body.service, group, req.body.name);
+        res.send(JSON.stringify({connectorId: connector.id}));
+    } catch(e) {
+        console.error(`Error while connector creation: ${e.message}`);
+        res.status(500).send(e.message);
+    }
 })
 
 app.listen(5000, () => {

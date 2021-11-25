@@ -1,131 +1,90 @@
-import fetch from 'node-fetch'
+import axios from 'axios';
 
 class ApiClient {
     constructor(baseUrl, apiKey, apiSecret){
-        function b64encode( str ) {
-            return Buffer.from(unescape(encodeURIComponent( str ))).toString('base64');
-        }
-        this.auth = 'Basic ' + b64encode(apiKey + ':' + apiSecret);
+        this.auth = { username: apiKey, password: apiSecret };
         this.baseUrl = baseUrl;
     }
+    async getMetadata(){ 
+        return await this.executePaged(`get`, `/metadata/connectors`, 200);
+    }
 
-    request(method, path, data) { return new Request(this.baseUrl, this.auth, method, path, null, data) }
-
-    async getMetadata(){ return await this.request('GET', '/metadata/connectors', null).executePaged(200); }
-
-    async getListOfConnectorsInGroup(group) { return await this.request('GET', '/groups/' + group + '/connectors', null).executePaged(1000); }
+    async getListOfConnectorsInGroup(group) { 
+        return await this.executePaged(`get`, `/groups/${group}/connectors`,  1000);
+    }
 
     async createConnector(service, group, name) {
-        return await this.request(
-            'POST', 
-            '/connectors', 
-            {
-                service: service,
-                group_id: group, 
-                config: {
-                    schema: name,
-                    table: name,
-                    schema_prefix: name
-                }
+        const responseData = await this.execute(`post`, `/connectors`, 
+        {
+            service: service,
+            group_id: group, 
+            config: {
+                schema: name,
+                table: name,
+                schema_prefix: name
             }
-        ).executeSingle();
+        })
+        return responseData.data;
     }
 
-    async getConnectCardUrlForConnector(id) {
-        return this.request('POST', '/connectors/' + id + '/connect-card-token', {}).executeSingle()
-            .then( body => {
-                return 'https://fivetran.com/connect-card/setup?auth=' + body.token;
-            }).catch(e => {
-                throw Error("Can't get the connect-card-token for connector: " + e);
-            })
+    async getConnectCardTokenForConnector(id) {
+        const responseData = await this.execute(`post`, `/connectors/${id}/connect-card-token`, {});
+        return responseData.token;
     }
-}
 
-class Request {
-    constructor(baseUrl, auth, method, path, queryParams, data){
-        this.baseUrl = baseUrl;
-        this.path = path,
-        this.queryParams = queryParams,
-
-        this.params = {
+    async execute(method, path, data) {
+        console.log(`${method}, ${path}`);
+        if (data)
+            console.log(data);
+        const response = await axios({
             method: method,
-            mode: 'cors',
-            cache: 'no-cache', 
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': auth,
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
-        };
+            baseURL: this.baseUrl,
+            url: path,
+            auth: this.auth,
+            data: data
+        });
+        console.log(response.status);
+        if (response.status >= 400)
+            throw Error(response.data);
         
-        if (data) {
-            this.params.headers['Content-Type'] = 'application/json';
-            this.params.body = JSON.stringify(data);
-        }
+        console.log(response.data);
+        return response.data;
     }
 
-    async execute() {
-        const url = this.baseUrl + this.path + (() => {
-            if (this.queryParams && Object.entries(this.queryParams).length > 0) {
-                let result = '?';
-                for(let param in this.queryParams){
-                    result += param + '=' + this.queryParams[param] + '&';
-                }
-                return result.slice(0, -1);
+    async executePaged(method, path, limit) {
+        console.log(`${method}, ${path}`)
+        const response = await axios({
+            method: method,
+            baseURL: this.baseUrl,
+            url: path,
+            auth: this.auth,
+            params: {
+                limit: limit
             }
-            return '';
-        })();
-        const response = await fetch(url, this.params);
-        return response;
-    }
-
-    async executeSingle() {
-        const response = await this.execute();
-        const body = await response.json();
-
-        if (response.status >= 400) {
-            throw Error(body.message); 
-        }
-        if (!body.data)
-            return body;
-
-        return body.data;
-    }
-
-    async executePaged(limitValue) {
-        if (!this.queryParams)
-            this.queryParams = {};
-        
-        this.queryParams.limit = limitValue
-        const response = await this.execute();
-        const body = await response.json();
-
-        if (response.status >= 400) {
-            throw Error(body.message) 
-        }
-        if(!body.data.items)
-            return [];
-
-        let items = body.data.items.slice();
-        let cursor = body.data.next_cursor;
+        });
+        let cursor = response.data.data.next_cursor;
+        let result = response.data.data.items.slice();
+        while(cursor){
+            console.log(`${method}, ${path}, ${cursor}`);
+            const response = await axios({
+                method: method,
+                baseURL: this.baseUrl,
+                url: path,
+                auth: this.auth,
+                params: {
+                    limit: limit,
+                    cursor: cursor
+                }
+            });
     
-        while(cursor) {
-            this.queryParams.limit = limitValue;
-            this.queryParams.cursor = cursor;
-
-            const response = await this.execute();
-            const body = await response.json();
-    
-            if (response.status >= 400) 
-                throw Error(body.message);
-    
-            items = items.concat(body.data.items);
-            cursor = body.data.next_cursor;
+            if (response.status >= 400){
+                console.log(response.data);
+                throw Error(response.data);
+            }
+            cursor = response.data.data.next_cursor;
+            result = result.concat(response.data.data.items);
         }
-
-        return items;
+        return result;
     }
 }
 

@@ -4,19 +4,27 @@ import {
   useParams,
 } from "react-router-dom";
 
-import { get } from '../request';
+import { get, handleError } from '../request';
 import { LoadingIndicator } from "./LoadingIndicator";
 
 export function Connector(props) {
   let { id } = useParams();
   const [editLink, setEditLink] = useState(null);
-  useEffect(() => {
-    get(`/_/connectors/${id}/form`) //TODO: use string interpolation everywhere instead of concatenation
-      .then(res => setEditLink(res.url + '&redirect_uri=http://localhost:3000/connectors/' + res.connectorId))
-      .catch(err => console.log(err));
+  const [editError, setEditError] = useState(null);
+  useEffect(async () => {
+    try {
+      const link = await get(`/_/connectors/${id}/form`);
+      setEditLink(`${link.url}&redirect_uri=http://localhost:3000/connectors/${link.connectorId}`)
+    } catch(e) {
+      setEditError(handleError(e));
+    }
   }, [id]);
-  if (!props.connectors || !props.services || !editLink)
+  if (!props.connectors || !props.services || !editLink){
+    if (editError){
+      return (<h2>An error occured: {editError}</h2>);
+    }
     return (<LoadingIndicator />);
+  }
 
   const connector = props.connectors.filter(c => c.id === id)[0];
   if (connector) {

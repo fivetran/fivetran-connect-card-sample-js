@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from "react";
 import {
   Link,
+  Redirect,
   useParams,
 } from "react-router-dom";
 
-import { post } from '../request';
+import { handleError, post } from '../request';
 import { LoadingIndicator } from "./LoadingIndicator";
 
 export function Service(props) {
   let { id } = useParams();
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+  const [redirect, setRedirect] = useState(null);
 
-  useEffect(() => {
-    console.log('Creating a connector');
-    post('/_/connectors', { service: id, name: name })
-      .then(res => {
-        window.location.href = res.url + '&redirect_uri=http://localhost:3000/connectors/' + res.connectorId;
-      })
-      .catch(err => console.log(err));
+  useEffect(async () => {
+    try {
+      if (submitted){
+        const connector = await post('/_/connectors', { service: id, name: name });
+        setRedirect(`/connectors/${connector.connectorId}`);
+      }
+    } catch(e) {
+      setError(handleError(e));
+    }
   }, [submitted, id, name]);
+  if (redirect)
+    return <Redirect to={redirect}/>;
+
+  if (error)
+    return <h2>An error occured: {error}</h2>
 
   if (!props.services || submitted)
     return <LoadingIndicator />;

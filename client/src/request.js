@@ -25,3 +25,15 @@ export const post = async (path, data) => {
     
     throw Error(await response.text());
 }
+
+export const handleError = (e) => {
+  if (e instanceof Error){
+    if (e.message.includes('Proxy error')){
+      return ('Please ensure that server.js is running on localhost:5000');
+    }
+    if (e.message.includes('Invalid authorization credentials')) {
+      return ('Please update API key and secret at server.js');
+    }
+  }
+  return ("Unhandled error: " + e.message);
+}
