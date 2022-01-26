@@ -2,9 +2,9 @@
 import ApiClient from './api-client.js'
 import express from 'express'
 
-//                           'API URL'                      'API-key'           'API-secret'
-const client = new ApiClient('https://api.fivetran.com/v1', 'f5DGD1uF0dxNcdhS', '3or5FPaopLB6LXIMaAqa3UGXLm2ErErS');
-const group = '1k56c2c4xlti6';
+//                           'API URL'                      'API-key'  'API-secret'
+const client = new ApiClient('https://api.fivetran.com/v1', 'API_KEY', 'API_SECRET');
+const group = 'GROUP_ID';
 
 // Imitation of connectors storage. In this map we store display names for created connectors.
 // In production you can use DB to store all information about created connectors.
@@ -77,6 +77,6 @@ app.post('/_/connectors', async(req, res) => {
     }
 })
 
-app.listen(5000, () => {
-  console.log(`Example app listening at http://localhost:5000`);
+app.listen(5001, () => {
+  console.log(`Example app listening at http://localhost:5001`);
 })
