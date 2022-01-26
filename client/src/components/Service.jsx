@@ -19,7 +19,7 @@ export function Service(props) {
     const submit = async () => {
       try {
         const connector = await post('/_/connectors', { service: id, name: name });
-        setRedirect(`/connectors/${connector.connectorId}`);
+        setRedirect(`/connectors/${connector.id}`);
       } catch(e) {
         setError(handleError(e));
       }

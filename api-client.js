@@ -13,18 +13,27 @@ class ApiClient {
         return await this.executePaged(`get`, `/groups/${group}/connectors`,  1000);
     }
 
+    async getConnector(id) {
+        const responseData = await this.execute(`get`, `/connectors/${id}`, null);
+        return responseData.data;
+    }
+
     async createConnector(service, group, name) {
+        const connector_ft_name = name.replace(/ /g, '_').toLowerCase();
+        console.log('Connector schema name: ' + connector_ft_name)
         const responseData = await this.execute(`post`, `/connectors`, 
         {
             service: service,
             group_id: group, 
             config: {
-                schema: name,
-                table: name,
-                schema_prefix: name
+                schema: connector_ft_name,
+                table: connector_ft_name,
+                schema_prefix: connector_ft_name
             }
         })
-        return responseData.data;
+        let result = responseData.data;
+        result.display_name = name
+        return result;
     }
 
     async getConnectCardTokenForConnector(id) {
