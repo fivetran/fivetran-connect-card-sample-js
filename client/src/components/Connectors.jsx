@@ -21,7 +21,7 @@ export function Connectors(props) {
               <div className="service-item">
                 <img className="service-icon" src={service.icon_url} alt={service.name} />
                 <h3 className="service-description">
-                  {item.schema}
+                  {item.display_name}
                 </h3>
               </div>
             </Link>);
@@ -30,7 +30,7 @@ export function Connectors(props) {
             <Link key={item.id} to={`/connectors/${item.id}`}>
               <div className="service-item">
                 <h3 className="service-description-no-icon">
-                  {item.schema}
+                  {item.display_name}
                 </h3>
               </div>
             </Link>);
