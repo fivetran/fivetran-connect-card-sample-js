@@ -12,6 +12,7 @@ export function Connector(props) {
   const [editLink, setEditLink] = useState(null);
   const [editError, setEditError] = useState(null);
   const [connector, setConnector] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const getLink = async () => { 
       try {
@@ -31,9 +32,13 @@ export function Connector(props) {
       } catch(e) {
         setEditError(handleError(e));
       }
+      setLoading(false);
     }
     getConnector();
   }, [id]);
+  if (loading){
+    return (<LoadingIndicator />);
+  }
   if (!props.connectors || !props.services || !editLink){
     if (editError){
       return (<h2>An error occured: {editError}</h2>);

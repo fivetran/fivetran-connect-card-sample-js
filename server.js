@@ -3,8 +3,8 @@ import ApiClient from './api-client.js'
 import express from 'express'
 
 //                           'API URL'                      'API-key'  'API-secret'
-const client = new ApiClient('https://api.fivetran.com/v1', 'API_KEY', 'API_SECRET');
-const group = 'GROUP_ID';
+const client = new ApiClient('https://api.fivetran.com/v1', 'f5DGD1uF0dxNcdhS', '3or5FPaopLB6LXIMaAqa3UGXLm2ErErS');
+const group = 'worker_tennis';
 
 // Imitation of connectors storage. In this map we store display names for created connectors.
 // In production you can use DB to store all information about created connectors.
