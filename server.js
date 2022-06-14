@@ -1,4 +1,3 @@
-
 import ApiClient from './api-client.js'
 import express from 'express'
 
@@ -59,8 +58,9 @@ app.get('/_/connectors/:connectorId', async(req, res) => {
 
 app.get('/_/connectors/:connectorId/form', async(req, res) => {
     try {
-        const token = await client.getConnectCardTokenForConnector(req.params.connectorId);
-        res.send(JSON.stringify({ url: `https://fivetran.com/connect-card/setup?auth=${token}`, connectorId: req.params.connectorId}))
+        const connId = req.params.connectorId;
+        const token = await client.getConnectCardTokenForConnector(connId);
+        res.send(JSON.stringify({ url: `https://fivetran.com/connect-card/setup?`, redirect_uri: `https://fivetran.com/connectors/${connId}`, auth: token}))
     } catch(e) {
         res.status(500).send(`Error while retrieving connect-card: ${e.response.data.message}`);
     }
