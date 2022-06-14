@@ -17,7 +17,7 @@ export function Connector(props) {
     const getLink = async () => { 
       try {
         const link = await get(`/_/connectors/${id}/form`);
-        setEditLink(`${link.url}&redirect_uri=http://localhost:3000/connectors/${link.connectorId}`)
+        setEditLink(`${link.url}redirect_uri=${link.redirect_uri}&auth=${link.auth}`)
       } catch(e) {
         setEditError(handleError(e));
       }
@@ -76,3 +76,4 @@ export function Connector(props) {
   }
   return (<h2>Oops! Connector with id {id} not found :(</h2>)
 }
+
