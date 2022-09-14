@@ -5,13 +5,11 @@ import {
   Route,
   Link,
 } from "react-router-dom";
-import { Connector } from './components/Connector';
+
 import { Connectors } from './components/Connectors';
 import { Service } from "./components/Service";
 import { Services } from "./components/Services"
-
 import { get, handleError  } from './request';
-
 
 import './PBF-App.css'
 
@@ -39,9 +37,6 @@ export default function App () {
     return (
       <Router>
         <Switch>
-          <Route path="/connectors/:id">
-            <Connector services={services} connectors={connectors}/>
-          </Route>
           <Route path="/connectors">
             <Connectors services={services} connectors={connectors}/>
           </Route>
