@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import {
   Link,
-  Redirect,
   useParams,
 } from "react-router-dom";
 
-import { handleError, post } from '../request';
+import { handleError, get, post } from '../request';
 import { LoadingIndicator } from "./LoadingIndicator";
 
 export function Service(props) {
@@ -13,13 +12,13 @@ export function Service(props) {
   const [name, setName] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
-  const [redirect, setRedirect] = useState(null);
 
   useEffect(() => {
     const submit = async () => {
       try {
         const connector = await post('/_/connectors', { service: id, name: name });
-        setRedirect(`/connectors/${connector.id}`);
+        const link = await get(`/_/connectors/${connector.id}/form`);
+        window.location.href = `${link.url}&redirect_uri=http://localhost:3000/connectors/`;
       } catch(e) {
         setError(handleError(e));
       }
@@ -28,9 +27,6 @@ export function Service(props) {
       submit();
     }
   }, [submitted, id, name]);
-  
-  if (redirect)
-    return <Redirect to={redirect}/>;
 
   if (error)
     return <h2>An error occured: {error}</h2>
