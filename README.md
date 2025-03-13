@@ -2,7 +2,7 @@
  
 > IMPORTANT: To use this project, you must be a Powered by Fivetran customer. This is a demo project, and you do not need to have an existing React front end or Express back end project.
 
-The API Sample Code Project shows you how to allow your customers to create new and manage existing connectors. You will only create one connector group at a time and there are no auth sessions between the front end and the back end, so all of your customers can see all of the connectors in that group.
+The API Sample Code Project shows you how to allow your customers to create new and manage existing connections. You will only create one connection group at a time and there are no auth sessions between the front end and the back end, so all of your customers can see all of the connections in that group.
 
 ## Install & run
 
@@ -51,9 +51,9 @@ The core element of this project is `api-client.js`, which is a simple Fivetran 
 
 The API client has the following methods:
 - `getMetadata`: Retrieves metadata for all available connectors. It uses the [Retrieve source metadata endpoint](https://fivetran.com/docs/rest-api/connectors#retrievesourcemetadata).
-- `getListOfConnectorsInGroup`: Retrieves all existing connectors in a group. It uses the [List All Connectors within a Group endpoint](https://fivetran.com/docs/rest-api/groups#listallconnectorswithinagroup).
-- `createConnector`: Creates a new connector of a specific service type. It uses the [Create a connector endpoint](https://fivetran.com/docs/rest-api/connectors#createaconnector).
-- `getConnectCardUrlForConnector`: Returns a Connect Card URL with an auth token that is prepared to create a new or edit an existing connector. It uses the [Connect Card](https://fivetran.com/docs/rest-api/connectors/connect-card) flow.
+- `getListOfConnectorsInGroup`: Retrieves all existing connections in a group. It uses the [List All Connections within a Group endpoint](https://fivetran.com/docs/rest-api/groups#listallconnectorswithinagroup).
+- `createConnector`: Creates a new connection of a specific service type. It uses the [Create a connection endpoint](https://fivetran.com/docs/rest-api/connectors#createaconnector).
+- `getConnectCardUrlForConnector`: Returns a Connect Card URL with an auth token that is prepared to create a new or edit an existing connection. It uses the [Connect Card](https://fivetran.com/docs/rest-api/connectors/connect-card) flow.
 
 ### Server
 
@@ -61,15 +61,15 @@ The API client has the following methods:
 
 It has the following defined routes:
 - GET `/_/services`: Returns all available service types and related meta-information by service (using display name, icons, doc URLs, etc.)
-- GET `/_/connectors`: Returns all existing connectors in a particular group.
-- GET `/_/connectors/:connectorId/form`: Returns the URL for the connector's embedded setup form with the connector ID. 
-- POST `/_/connectors`: Creates a new connector. Consumes json with all necessary information for connector creation:
+- GET `/_/connectors`: Returns all existing connections in a particular group.
+- GET `/_/connectors/:connectorId/form`: Returns the URL for the connection's embedded setup form with the connection ID. 
+- POST `/_/connectors`: Creates a new connection. Consumes json with all necessary information for connection creation:
     {
         "service":"service_id"
         "name":"connector_name"
     }
 
-To keep things simple, we use `name` as the `schema`, `table`, and `schema_prefix` parameter in the connector creation request payload. Learn more about the connector creation payload in our [REST API connector creation documentation](https://fivetran.com/docs/rest-api/connectors#createaconnector). This logic is encapsulated inside the ApiClient.
+To keep things simple, we use `name` as the `schema`, `table`, and `schema_prefix` parameter in the connection creation request payload. Learn more about the connection creation payload in our [REST API connection creation documentation](https://fivetran.com/docs/rest-api/connectors#createaconnector). This logic is encapsulated inside the ApiClient.
 
 > NOTE: The Express back end launches on port 5000. This port is defined as a proxy for ReactApp in `client/package.json`.
 
@@ -77,6 +77,6 @@ To keep things simple, we use `name` as the `schema`, `table`, and `schema_prefi
 
 Client is an SPA react application that is based on React Router. Lean more about the overall app structure at `/client/src/PBF-App.js`.
 
-The Client app caches all available connectors on startup (`ComponentDidMount`) and then just uses pre-cached lists. 
+The Client app caches all available connections on startup (`ComponentDidMount`) and then just uses pre-cached lists. 
 
-Once you create a new connector, you'll be redirected to the Fivetran Setup-form page and then redirected back - so the App component will be reloaded, and cache will be updated. So you'll see you new connector. 
+Once you create a new connection, you'll be redirected to the Fivetran Setup-form page and then redirected back - so the App component will be reloaded, and cache will be updated. So you'll see you new connection. 
